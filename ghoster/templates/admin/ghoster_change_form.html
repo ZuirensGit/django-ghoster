@@ -1,0 +1,238 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls admin_static admin_modify ghoster_tags %}
+
+{% block extrahead %}{{ block.super }}
+    <link rel="stylesheet" type="text/css" href="{% static "admin/css/markdown.css" %}"/>
+    <link rel="stylesheet" href="{% static "admin/vendor/codemirror/lib/codemirror.css" %}"/>
+    <link rel="stylesheet" href="{% static "admin/vendor/datetimepicker/css/bootstrap-datetimepicker.css" %}"/>
+    <link rel="stylesheet" href="{% static "admin/vendor/tagsinput/bootstrap-tagsinput.css" %}"/>
+    <script type="text/javascript" src="{% url 'admin:jsi18n' %}"></script>
+    {{ media }}
+
+{% endblock %}
+
+
+{% block content %}
+
+    {% if is_popup %}<input type="hidden" name="{{ is_popup_var }}" value="1"/>{% endif %}
+    {% if to_field %}<input type="hidden" name="{{ to_field_var }}" value="{{ to_field }}"/>{% endif %}
+    {% if errors %}
+        <div class="card-inverse card-danger">
+            <div class="card-block">
+                <p class="errornote">
+                    {% if errors|length == 1 %}{% trans "Please correct the error below." %}{% else %}
+                        {% trans "Please correct the errors below." %}{% endif %}
+                </p>
+                {{ adminform.form.non_field_errors }}
+                {% for fieldset in adminform %}
+                    {% include "admin/includes/fieldset_error.html" %}
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+
+{#    TODO: don't know why span disappear and jq doesn't work #}
+{#    <span class="datetimeshortcuts">#}
+{#    <a href="javascript:DateTimeShortcuts.openClock(0);" id="clocklink0">#}
+{#    <span class="clock-icon" title="Choose a Time">1111</span>#}
+{#    </a>#}
+{#    </span>#}
+    {{ ghosterform.markdown }}
+
+{% endblock %}
+
+{% block ghoster-cms %}
+    {% get_ghoster_form adminform as ghosterform %}
+    <form {% if has_file_field %}enctype="multipart/form-data" {% endif %}action="{{ form_url }}" method="post"
+          id="{{ opts.model_name }}_form" novalidate>{% csrf_token %}{% block form_top %}{% endblock %}
+        <div class="wrapper">{{ block.super }}</div>
+
+    </form>
+
+{% endblock %}
+
+{% block object-tools %}
+    <li class="nav-item">
+        <input type="submit" value="儲存" class="btn btn-primary btn-sm mt15" name="_continue">
+    </li>
+    {% if change %}{% if not is_popup %}
+        {% block object-tools-items %}
+            <li class="nav-item">
+                {% url opts|admin_urlname:'history' original.pk|admin_urlquote as history_url %}
+                <a href="{% add_preserved_filters history_url %}"
+                   class="historylink">{% trans "History" %}</a>
+            </li>
+            {% if has_absolute_url %}
+                <li class="nav-item"><a href="{{ absolute_url }}" class="viewsitelink">{% trans "View on site" %}</a>
+                </li>{% endif %}
+        {% endblock %}
+    {% endif %}{% endif %}
+{% endblock %}
+
+{% block ghoster-topbar %}
+
+    <div class="form-inline form-title pull-xs-left p-x-2 col-md-6">
+        {{ ghosterform.title }}
+        {# {{ gh.meta.title }} #}
+    </div>
+{% endblock %}
+
+
+
+{% block ghoster-sidebar %}
+
+
+     <div class="tab-content">
+         <div class="tab-pane active" id="timeline" role="tabpanel">
+            {% block field_sets %}
+                {% for fieldset in ghosterform.meta %}
+                    {% include "admin/includes/ghoster_fieldset.html" %}
+                    </div>
+                {% endfor %}
+            {% endblock %}
+
+{#            <div class="callout m-a-0 p-y-h text-muted text-xs-center bg-faded text-uppercase">#}
+{#                <small><b>slug</b></small>#}
+{#            </div>#}
+{#            <hr class="transparent m-x-1 m-y-0">#}
+{#            <div class="callout callout-warning m-a-0 p-y-1">#}
+{#                <div>{{ gh.meta.slug }}</div>#}
+{#            </div>#}
+{#            <hr class="transparent m-x-1 m-y-0">#}
+{#            <div class="callout m-a-0 p-y-h text-muted text-xs-center bg-faded text-uppercase">#}
+{#                <small><b>thumbnail</b></small>#}
+{#            </div>#}
+{#            <hr class="transparent m-x-1 m-y-0">#}
+{#            <div class="callout callout-danger m-a-0 p-y-1">#}
+                {#                <button type="button" class="btn btn-primary btn-block"><i class="fa fa-cloud-upload fa-lg"></i> 未選擇任何檔案</button>#}
+{#                {{ gh.meta.cover }}#}
+{#            </div>#}
+{#            <hr class="transparent m-x-1 m-y-0">#}
+{#            <div class="callout m-a-0 p-y-h text-muted text-xs-center bg-faded text-uppercase">#}
+{#                <small><b>page</b></small>#}
+{#            </div>#}
+{#            <hr class="transparent m-x-1 m-y-0">#}
+{#            <div class="callout callout-danger m-a-0 p-y-1">#}
+{#                <div>{{ gh.meta.page }}</div>#}
+{#            </div>#}
+{#            <hr class="transparent m-x-1 m-y-0">#}
+{#            <div class="callout m-a-0 p-y-h text-muted text-xs-center bg-faded text-uppercase">#}
+{#                <small><b>category</b></small>#}
+{#            </div>#}
+{#            <hr class="transparent m-x-1 m-y-0">#}
+{#            <div class="callout callout-danger m-a-0 p-y-1">#}
+{#                <div>{{ gh.meta.category }}</div>#}
+{#            </div>#}
+{#            <hr class="transparent m-x-1 m-y-0">#}
+{#            <div class="callout m-a-0 p-y-h text-muted text-xs-center bg-faded text-uppercase">#}
+{#                <small><b>editor</b></small>#}
+{#            </div>#}
+{#            <hr class="transparent m-x-1 m-y-0">#}
+{#            <div class="callout callout-danger m-a-0 p-y-1">#}
+{#                <div>{{ gh.meta.editor }}</div>#}
+{#            </div>#}
+{#            <hr class="transparent m-x-1 m-y-0">#}
+{#            <div class="callout m-a-0 p-y-h text-muted text-xs-center bg-faded text-uppercase">#}
+{#                <small><b>date</b></small>#}
+{#            </div>#}
+{#            <hr class="transparent m-x-1 m-y-0">#}
+{#            <div class="callout callout-danger m-a-0 p-y-1">#}
+{#                <div class="datetimepicker input-group date mb-lg">#}
+{#                    <input type="text" class="form-control">#}
+{#                     <span class="input-group-addon">#}
+{#                        <span class="fa fa-calendar"></span>#}
+{#                     </span>#}
+{#                </div>#}
+{#                <div>{{ gh.meta.date }}</div>#}
+{#            </div>#}
+{#            <hr class="transparent m-x-1 m-y-0">#}
+{#            <div class="callout m-a-0 p-y-h text-muted text-xs-center bg-faded text-uppercase">#}
+{#                <small><b>tags</b></small>#}
+{#            </div>#}
+{#            <hr class="transparent m-x-1 m-y-0">#}
+{#            <div class="callout callout-danger m-a-0 p-y-1">#}
+                {# tag #}
+{#                <div>{{ gh.meta.tags }}</div>#}
+{#            </div>#}
+{#            <hr class="transparent m-x-1 m-y-0">#}
+{#            <div class="callout m-a-0 p-y-h text-muted text-xs-center bg-faded text-uppercase">#}
+{#                <small><b>viewers</b></small>#}
+{#            </div>#}
+{#            <hr class="transparent m-x-1 m-y-0">#}
+{#            <div class="callout callout-danger m-a-0 p-y-1">#}
+{#                <div>{{ gh.meta.viewers }}</div>#}
+{#            </div>#}
+{#            <hr class="m-x-1 m-y-0">#}
+         </div>
+     </div>
+{% endblock %}
+
+
+
+{% block content_title %}{% endblock %}
+
+{#{% block submit_buttons_top %}{% submit_row %}{% endblock %}#}
+
+
+
+
+{% block footer %}
+
+    <script src="{% static "admin/assets/js/libs/jquery.min.js" %}"></script>
+    <script src="{% static "admin/assets/js/libs/tether.min.js" %}"></script>
+    <script src="{% static "admin/assets/js/libs/bootstrap.min.js" %}"></script>
+    <script src="{% static "admin/assets/js/libs/pace.min.js" %}"></script>
+    <!-- Plugins and scripts required by all views -->
+    <script src="{% static "admin/assets/js/libs/Chart.min.js" %}"></script>
+    <!-- GenesisUI main scripts -->
+    <script src="{% static "admin/assets/js/app.js" %}"></script>
+    <!-- Plugins and scripts required by this views -->
+    <script src="{% static "admin/assets/js/libs/jquery.maskedinput.min.js" %}"></script>
+    <script src="{% static "admin/assets/js/libs/moment.min.js" %}"></script>
+    <script src="{% static "admin/assets/js/libs/select2.min.js" %}"></script>
+    <script src="{% static "admin/assets/js/libs/daterangepicker.min.js" %}"></script>
+    <!-- Custom scripts required by this view -->
+    <script src="{% static "admin/assets/js/views/forms.js" %}"></script>
+    <!-- START Page Custom Script-->
+    <!-- Markdown Area Codemirror and dependencies -->
+    <script src="{% static "admin/vendor/codemirror/lib/codemirror.js" %}"></script>
+    <script src="{% static "admin/vendor/codemirror/addon/mode/overlay.js" %}"></script>
+    <script src="{% static "admin/vendor/codemirror/mode/markdown/markdown.js" %}"></script>
+    <script src="{% static "admin/vendor/codemirror/mode/xml/xml.js" %}"></script>
+    <script src="{% static "admin/vendor/codemirror/mode/gfm/gfm.js" %}"></script>
+    <script src="{% static "admin/vendor/marked/marked.js" %}"></script>
+
+{#    <script>#}
+{#        // slugify title into the slug field#}
+{#        $(function () {#}
+{#            var title = $("input#id_title"),#}
+{#                slug = $("input#id_slug");#}
+{#            title.on('input', function (e) {#}
+{#                function slugify(text) {#}
+{#                    return text.toString().toLowerCase()#}
+{#                            .replace(/\s+/g, '-')           // Replace spaces with -#}
+{#                            .replace(/[^\u0080-\uFFFF\w\-]/g, '-') // Remove all non-word chars ( fix for UTF-8 chars )#}
+{#                            .replace(/\-\-+/g, '-')         // Replace multiple - with single -#}
+{#                            .replace(/^-+/, '')             // Trim - from start of text#}
+{#                            .replace(/-+$/, '');            // Trim - from end of text#}
+{#                }#}
+{#                slug.val(slugify(title.val()));#}
+{#            });#}
+{#        });#}
+{#    </script>#}
+    <!--Datepicker-->
+    <script
+            src="{% static "admin/vendor/datetimepicker/js/bootstrap-datetimepicker.min.js" %}"></script>
+    <!-- Tags input-->
+    <script src="{% static "admin/vendor/tagsinput/bootstrap-tagsinput.min.js" %}"></script>
+    <!-- Input Mask-->
+    <!-- App Main-->
+    <script src="{% static "admin/js/app-markdownarea.js" %}"></script>
+    <script type="text/javascript">
+        var textarea = document.getElementById("{{ghosterform.markdown.id}}");
+        textarea.setAttribute('data-uk-markdownarea', '{mode:"split"}');
+        textarea.setAttribute('onload', "this.value='#Title Some content'");
+    </script>
+
+{% endblock %}
+

@@ -1,0 +1,118 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_static %}
+{% block extrastyle %}{{ block.super }}
+    <link rel="stylesheet" type="text/css" href="{% static "admin/vendor/BigVideo/css/bigvideo.css" %}"/>
+    <script src="{% static "admin/assets/js/libs/jquery.min.js" %}"></script>
+
+    <script src="//vjs.zencdn.net/4.3/video.js"></script>
+    <script src="{% static "admin/vendor/BigVideo/lib/bigvideo.js" %}"></script>
+{% endblock %}
+
+{% block bodyclass %}{% endblock %}
+
+{% block usertools %}{% endblock %}
+
+{% block nav-global %}{% endblock %}
+
+{% block content_title %}{% endblock %}
+
+{% block breadcrumbs %}{% endblock %}
+
+{% block content %}
+
+
+
+
+
+    <div class="row">
+        <div class="col-md-5 center-block pull-xs-none">
+
+              {% if form.errors and not form.non_field_errors %}
+              <div class="btn btn-danger-outline btn-sm col-xl-12 m-b-2">
+                      {% if form.errors.items|length == 1 %}{% trans "Please correct the error below." %}{% else %}
+                          {% trans "Please correct the errors below." %}{% endif %}
+                        </div>
+              {% endif %}
+              {% if form.non_field_errors %}
+                  {% for error in form.non_field_errors %}
+                  <div class="btn btn-danger-outline btn-sm col-xl-12 m-b-2">
+                          {{ error }}
+                        </div>
+                  {% endfor %}
+              {% endif %}
+            <!-- START panel-->
+            <div class="card vamiddle">
+
+            <div class="card-block p-a-2">
+              <h2>Login</h2>
+              <p class="text-muted">Sign In to your account</p>
+                    {% if user.is_authenticated %}
+                        <div class="btn btn-danger">
+                            {% blocktrans trimmed %}
+                                You are authenticated as {{ username }}, but are not authorized to
+                                access this page. Would you like to login to a different account?
+                            {% endblocktrans %}
+                        </div>
+                    {% endif %}
+                    <form role="form" class="mb-lg" action="{{ app_path }}" method="post"
+                          id="login-form">{% csrf_token %}
+                        <div class="input-group m-b-1">
+                          <span class="input-group-addon"><i class="icon-user"></i></span>
+                            <input id="id_username" name="username" type="text" class="form-control">
+                        </div>
+                        <div class="input-group m-b-2">
+                          <span class="input-group-addon"><i class="icon-lock"></i></span>
+                            <input id="id_password" name="password" type="password" class="form-control">
+                        </div>
+                        <div class="clearfix">
+                            <div class="checkbox c-checkbox pull-left mt0">
+                                <label>
+                                    <input type="checkbox" value="">
+                                    <span class="fa fa-check"></span>Remember Me</label>
+                            </div>
+                            {% url 'admin_password_reset' as password_reset_url %}
+                            {% if password_reset_url %}
+                                <div class="pull-right"><a href="{{ password_reset_url }}"
+                                                           class="text-muted">{% trans 'Forgotten your password or username?' %}</a>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <button type="submit" class="btn btn-block btn-primary">Login</button>
+                    </form>
+            </div>
+          </div>
+            <!-- END panel-->
+        </div>
+    </div>
+    
+        <script>
+            $(function () {
+                var BV = new $.BigVideo();
+                BV.init();
+                BV.show("http://vjs.zencdn.net/v/oceans.mp4", {ambient: true});
+            });
+        </script>
+        <script>
+        function verticalAlignMiddle()
+        {
+            var bodyHeight = $(window).height();
+            var form = $('.vamiddle');
+            var marginTop = (bodyHeight / 2) - (form.height() / 2);
+            if (marginTop > -0)
+            {
+                form.css('margin-top', marginTop).css('opacity', 0.95);
+            }
+        }
+        $(document).ready(function()
+        {
+            verticalAlignMiddle();
+        });
+        $(window).bind('resize', verticalAlignMiddle);
+        </script>
+
+
+
+
+{% endblock %}
+{% block ghoster-title %}{% endblock %}
+{% block footer %}{% endblock %}

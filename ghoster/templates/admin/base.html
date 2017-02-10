@@ -1,0 +1,180 @@
+{% load i18n admin_static ghoster_tags %}<!DOCTYPE html>
+{% get_current_language as LANGUAGE_CODE %}{% get_current_language_bidi as LANGUAGE_BIDI %}
+<html lang="{{ LANGUAGE_CODE|default:"en-us" }}" {% if LANGUAGE_BIDI %}dir="rtl"{% endif %}>
+<head>
+    {% get_gh_app_list as ghoster_app_list %}
+    {# {% get_base_media as base_media %} #}
+    <title>{% block title %}{% endblock %}</title>
+    {% block stylesheet %}
+        <link rel="stylesheet" type="text/css" href="{% static "admin/assets/css/style.css" %}"/>
+        <link rel="stylesheet" type="text/css" href="{% static "admin/assets/css/app.css" %}"/>
+    {% endblock %}
+    {% block extrastyle %}{% endblock %}
+    {% if LANGUAGE_BIDI %}
+        <link rel="stylesheet" type="text/css"
+              href="{% block stylesheet_rtl %}{% static "admin/css/rtl.css" %}{% endblock %}"/>{% endif %}
+    {% block extrahead %}{% endblock %}
+    {% block blockbots %}
+        <meta name="robots" content="NONE,NOARCHIVE"/>{% endblock %}
+</head>
+{% load i18n %}
+
+<body class="{% if is_popup %}popup {% endif %}{% block bodyclass %}navbar-fixed sidebar-nav fixed-nav{% endblock %}"
+      data-admin-utc-offset="{% now "Z" %}">
+{% block ghoster-cms %}
+    {% if not is_popup %}
+        {% block nav-global %}
+            <header class="navbar">
+                <div class="container-fluid">
+                    <button class="navbar-toggler mobile-toggler hidden-lg-up" type="button">&#9776;</button>
+                    <a class="navbar-brand" href="#">{% block branding %}{% endblock %}</a>
+                    <ul class="nav navbar-nav hidden-md-down float-xs-lest">
+                        <li class="nav-item b-r-1">
+                            <a class="nav-link navbar-toggler layout-toggler" href="#">&#9776;</a>
+                        </li>
+                    </ul>
+                    {% block ghoster-topbar %}{% endblock %}
+                    <ul class="nav navbar-nav pull-right hidden-md-down">
+                        {% block object-tools %}{% endblock %}
+                        <li class="nav-item">
+                            <a class="nav-link navbar-toggler aside-toggle" href="#">&#9776;</a>
+                        </li>
+                    </ul>
+                </div>
+            </header>
+
+            <div class="sidebar">
+                {% block usertools %}
+                    {% if has_permission %}
+                        <div class="sidebar-header">
+                        <img src="{% static "admin/img/logo.png" %}" class="img-avatar" alt="Logo">
+                        <div>
+                            {% block welcome-msg %}
+                                <strong>{% firstof user.get_short_name user.get_username %}</strong>
+                                </div>
+                                <div class="text-muted">
+                                <small>{% trans 'Welcome' %}</small>
+                            {% endblock %}
+                            </div>
+                        {% block userlinks %}
+                            <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                                <button type="button" class="btn btn-link">
+                                    {% if site_url %}
+                                        <a href="{{ site_url }}"><i class="icon-compass"></i></a>
+                                    {% endif %}
+                                    {% if user.is_active and user.is_staff %}
+                                        {% url 'django-admindocs-docroot' as docsroot %}
+                                        {% if docsroot %}
+                                            <a href="{{ docsroot }}">{% trans 'Documentation' %}</a>
+                                        {% endif %}
+                                    {% endif %}
+                                </button>
+                                <button type="button" class="btn btn-link">
+                                    {% if user.has_usable_password %}
+                                        <a href="{% url 'admin:password_change' %}"><i class="icon-user"></i></a>
+                                    {% endif %}
+                                </button>
+                                <button type="button" class="btn btn-link">
+                                    <a href="{% url 'admin:logout' %}"><i class="icon-logout"></i></a>
+                                </button>
+                            </div>
+                        {% endblock %}
+                    {% endif %}
+                {% endblock %}
+                </div>
+
+                <nav class="sidebar-nav">
+                    <ul class="nav">
+                        {% block ghoster-menu %}
+                            {% if ghoster_app_list %}
+                                {% for app in ghoster_app_list %}
+                                    <li class="nav-item nav-dropdown">
+                                        <a class="nav-link nav-dropdown-toggle" href="{{ app.app_url }}"><i
+                                                class="icon-puzzle"
+                                                title="{% blocktrans with name=app.name %}Models in the {{ name }} application{% endblocktrans %}"></i> {{ app.name }}
+                                        </a>
+                                        <ul class="nav-dropdown-items">
+                                            {% for model in app.models %}
+                                                {% if model.admin_url %}
+                                                    <li class="nav-item">
+                                                        <a class="nav-link" href="{{ model.admin_url }}"><i
+                                                                class="icon-puzzle"></i> {{ model.name }}</a>
+                                                    </li>
+                                                {% else %}
+                                                    <li>{{ model.name }}</li>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </ul>
+                                    </li>
+                                {% endfor %}
+                            {% endif %}
+                        {% endblock %}
+                    </ul>
+                </nav>
+                <div class="sidebar-footer">
+                    <ul class="terms">
+                        <li><a href="#">Help</a></li>
+                    </ul>
+                </div>
+            </div>
+        {% endblock %}
+
+        <assets class="aside-menu">
+            {% block ghoster-sidebar %}{% endblock %}
+        </assets>
+    {% endif %}
+
+
+    <main class="main">
+        {% if not is_popup %}
+            {% block breadcrumbs %}
+                <ol class="breadcrumb">
+                    <li>
+                        <small>
+                            <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
+                            {% if title %} &rsaquo; {{ title }}{% endif %}
+                        </small>
+                    </li>
+                </ol>
+            {% endblock %}
+        {% endif %}
+        <div class="container-fluid">
+        {% block messages %}
+            {% if messages %}
+                <div class="card-inverse card-success">
+                    {% for message in messages %}
+                        <div class="p-y-h p-x-2">
+                            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message|capfirst }}</li>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endblock messages %}
+
+        <!-- Content -->
+            {% block content %}
+                {{ content }}
+            {% endblock %}
+            {% block sidebar %}{% endblock %}
+        </div>
+        <!-- END Content -->
+    </main>
+
+    {% block footer %}
+        <footer class="footer">
+            <!-- Bootstrap and necessary plugins -->
+            <script src="{% static "admin/assets/js/libs/jquery.min.js" %}"></script>
+            <script src="{% static "admin/assets/js/libs/tether.min.js" %}"></script>
+            <script src="{% static "admin/assets/js/libs/bootstrap.min.js" %}"></script>
+            <script src="{% static "admin/assets/js/libs/pace.min.js" %}"></script>
+            <!-- Plugins and scripts required by all views -->
+            <script src="{% static "admin/assets/js/libs/Chart.min.js" %}"></script>
+            <!-- GenesisUI main scripts -->
+            <script src="{% static "admin/assets/js/app.js" %}"></script>
+        </footer>
+    {% endblock %}
+    <!-- END Container -->
+
+{% endblock %}
+</body>
+</html>

@@ -1,0 +1,63 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_static %}
+
+{% block extrastyle %}{{ block.super }}
+{% endblock %}
+
+{% block coltype %}colMS{% endblock %}
+
+{% block bodyclass %}{{ block.super }} dashboard{% endblock %}
+
+
+{% block content %}
+
+{% endblock %}
+
+
+{% block ghoster-sidebar %}
+
+
+<div class="tab-content">
+            <div class="tab-pane active" id="timeline" role="tabpanel">
+                <div class="callout m-a-0 p-y-h text-muted text-xs-center bg-faded text-uppercase">
+                    <small><b>{% trans 'Recent Actions' %}</b></small>
+                </div>
+                <hr class="transparent m-x-1 m-y-0">
+                <div class="callout m-a-0 p-y-h text-muted text-xs-center bg-faded text-uppercase">
+                    <small><b>{% trans 'My Actions' %}</b></small>
+                </div>
+                <hr class="transparent m-x-1 m-y-0">
+                <div class="callout callout-danger m-a-0 p-y-1">
+                  {% load log %}
+                  {% get_admin_log 10 as admin_log for_user user %}
+                  {% if not admin_log %}
+                      <p>{% trans 'None available' %}</p>
+                  {% else %}
+                      <ul class="nav">
+                          {% for entry in admin_log %}
+                              <li class="{% if entry.is_addition %}addlink{% endif %}{% if entry.is_change %}changelink{% endif %}{% if entry.is_deletion %}deletelink{% endif %}">
+                                  {% if entry.is_deletion or not entry.get_admin_url %}
+                                      {{ entry.object_repr }}
+                                  {% else %}
+                                      <a href="{{ entry.get_admin_url }}">{{ entry.object_repr }}</a>
+                                  {% endif %}
+                                  <br/>
+                                  {% if entry.content_type %}
+                                      <span class="mini quiet">{% filter capfirst %}
+                                          {{ entry.content_type }}{% endfilter %}</span>
+                                  {% else %}
+                                      <span class="mini quiet">{% trans 'Unknown content' %}</span>
+                                  {% endif %}
+                              </li>
+                          {% endfor %}
+                      </ul>
+                  {% endif %}
+                </div>
+                <hr class="m-x-1 m-y-0">
+            </div>
+        </div>
+{% endblock %}
+
+{% block sidebar %}
+
+{% endblock %}

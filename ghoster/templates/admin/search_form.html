@@ -1,0 +1,33 @@
+{% load i18n admin_static %} {% if cl.search_fields %}
+        <form id="changelist-search" class="form-inline search-form pull-xs-left p-x-2" method="get">
+                <!-- DIV needed for valid HTML -->
+                <button type="submit" class="btn btn-link btn-xs" value="{% trans 'Search' %}"/>
+                <i class="fa fa-search"></i>
+              </button>
+                <input type="text" class="form-control" name="{{ search_var }}" value="{{ cl.query }}" placeholder="Search" id="searchbar"/>
+                    <span class="oi oi-magnifying-glass"></span>
+                    {% if show_result_count %}
+                        <span class="small quiet">
+                            {% blocktrans count counter=cl.result_count %}
+                                {{ counter }} result{% plural %}{{ counter }} results
+                            {% endblocktrans %}
+                            (<a href="?{% if cl.is_popup %}_popup=1{% endif %}">
+                                {% if cl.show_full_result_count %}
+                                    {% blocktrans with full_result_count=cl.full_result_count %}
+                                        {{ full_result_count }} total
+                                    {% endblocktrans %}
+                                {% else %}
+                                    {% trans "Show all" %}
+                                {% endif %}</a>)
+                        </span>
+                    {% endif %}
+                    {% for pair in cl.params.items %}
+                        {% if pair.0 != search_var %}
+                            <input type="hidden" name="{{ pair.0 }}" value="{{ pair.1 }}"/>
+                        {% endif %}
+                    {% endfor %}
+        </form>
+    <script type="text/javascript">
+        document.getElementById("searchbar").focus();
+    </script>
+{% endif %}

@@ -1,0 +1,9 @@
+{% load i18n %}
+<div class="card-block">
+<h5>{% trans "Summary" %}</h5>
+<ul>
+    {% for model_name, object_count in model_count %}
+    <li>{{ model_name|capfirst }}: {{ object_count }}</li>
+    {% endfor %}
+</ul>
+</div>
