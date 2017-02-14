@@ -28,6 +28,19 @@
             {{ opts.verbose_name_plural|capfirst }}{% endif %}
             &rsaquo;
             {% if add %}{% trans 'Add' %} {{ opts.verbose_name }}{% else %}{{ original|truncatewords:"18" }}{% endif %}</li></small>
+            <small>
+            {% if change %}{% if not is_popup %}
+                <li class="breadcrumb-menu-mobile m-line">
+                        {% url opts|admin_urlname:'history' original.pk|admin_urlquote as history_url %}
+                       <a href="{% add_preserved_filters history_url %}"
+                           class="historylink">{% trans "History" %}</a>
+                         </li>
+                    {% if has_absolute_url %}
+                    <li class="breadcrumb-menu-mobile m-line">
+                        <a href="{{ absolute_url }}" class="viewsitelink">{% trans "View on site" %}</a>
+                      </li>{% endif %}
+            {% endif %}{% endif %}
+            </small>
         </ol>
     {% endblock %}
 {% endif %}
