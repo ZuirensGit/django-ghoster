@@ -3,7 +3,26 @@ Ghoster
 =======
 
 **ghoster** is a admin theme which includes markdown features for `Django <https://www.djangoproject.com/>`_ users.
- 
+
+
+Snapshot
+========
+**regular template:**
+
+..  image:: http://i.imgur.com/WHd6Hlt.png
+    :width: 30%
+
+..  image:: http://i.imgur.com/iHal9Jf.png
+    :width: 30%
+
+**markdown template:**
+
+..  image:: http://i.imgur.com/sXkcUNu.png
+    :width: 30%
+
+..  image:: http://i.imgur.com/FJjOHaK.png
+    :width: 30%
+
 Requirements
 ============
 
