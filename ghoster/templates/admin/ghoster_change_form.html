@@ -51,6 +51,27 @@
 
 {% endblock %}
 
+{% if not is_popup %}
+{% block breadcrumbs %}
+<ol class="breadcrumb">
+  <small>
+      <li class="desktop-title">
+          <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
+          {% if title %} &rsaquo; {{ title }}{% endif %}
+     </li>
+  </small>
+  <div class="form-inline form-title pull-xs-left p-x-2 col-md-6 mobile-ghoster-title">
+      {{ gh.meta.title }}
+  </div>
+  <li class="breadcrumb-menu-mobile">
+      <input type="submit" value="儲存" class="btn btn-primary btn-sm mt15" name="_continue">
+  </li>
+</ol>
+
+{% endblock %}
+{% endif %}
+
+
 {% block object-tools %}
     <li class="nav-item">
         <input type="submit" value="儲存" class="btn btn-primary btn-sm mt15" name="_continue">
@@ -71,7 +92,7 @@
 
 {% block ghoster-topbar %}
 
-    <div class="form-inline form-title pull-xs-left p-x-2 col-md-6">
+<div class="form-inline form-title pull-xs-left p-x-2 col-md-6 desktop-ghoster-title">
         {{ ghosterform.title }}
         {# {{ gh.meta.title }} #}
     </div>
@@ -235,4 +256,3 @@
     </script>
 
 {% endblock %}
-

@@ -13,7 +13,7 @@ li.success a:hover {
 
 /*update*/
 input[type=text], input[type=password], input[type=email], input[type=url],
-input[type=number], textarea, select, .vTextField {
+input[type=number], textarea, select {
     display: block;
     width: 100%;
     padding: 0.375rem 1.75rem 0.375rem 0.75rem;
@@ -23,7 +23,15 @@ input[type=number], textarea, select, .vTextField {
     background-color: #fff;
     background-image: none;
     border: 1px solid #ccc;
-    transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+    border-radius: 0px;
+    transition: border-color ease-in-out 0.15s;
+}
+
+input[type=text]:focus, input[type=password]:focus, 
+input[type=email]:focus, input[type=url]:focus,
+input[type=number]:focus {
+  outline: none;
+  border-color: #20a8d8;
 }
 
 /* ========================================================================
@@ -130,4 +138,67 @@ textarea.bootstrap-tagsinput {
 }
 [data-toggle="play-animation"][data-offset].anim-done {
   visibility: visible;
+}
+.breadcrumb-menu-mobile {
+  position: absolute;
+  top: 10px;
+  right: 1rem;
+  line-height: 43px; }
+  .breadcrumb-menu-mobile:before {
+    display: none; }
+  .breadcrumb-menu-mobile .btn.btn-secondary, .breadcrumb-menu .fc button, .fc .breadcrumb-menu button {
+    color: #818a91;
+    border: 0; }
+    .breadcrumb-menu-mobile .btn.btn-secondary:hover, .breadcrumb-menu .fc button:hover, .fc .breadcrumb-menu-mobile button:hover, .breadcrumb-menu .btn.btn-secondary.active, .breadcrumb-menu .fc button.active, .fc .breadcrumb-menu button.active {
+      color: #2a2c36;
+      background: transparent; }
+  .breadcrumb-menu-mobile .open .btn.btn-secondary, .breadcrumb-menu .open .fc button, .fc .breadcrumb-menu-mobile .open button {
+    color: #2a2c36;
+    background: transparent; }
+
+@media (min-width: 991px) {
+  .breadcrumb-menu-mobile {
+    display: none;
+  }
+  .mobile-search {
+    display: none;
+  }
+  .mobile-ghoster-title {
+    display: none;
+  }
+  .mobile-b {
+    display: none;
+  }
+}
+@media (max-width:991px) {
+  .desktop-search {
+    display: none;
+  }
+  .desktop-title {
+    display: none;
+  }
+  .desktop-ghoster-title {
+    display: none;
+  }
+  .p-x-2 {
+    padding-right: 0rem !important;
+    padding-left: 0rem !important;
+  }
+  .m-line {
+    line-height: 20px;
+  }
+  .mobile-b {
+    position: absolute;
+      top: 0px;
+      right: 0;
+      width: 70px;
+      height: inherit;
+      color: rgba(0, 0, 0, 0.3);
+      padding: 0 .75em;
+      line-height: 51px;
+      font-size: 1.25rem;
+      background: none;
+      border: 1px solid transparent;
+
+  }
 }

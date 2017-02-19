@@ -37,12 +37,22 @@
 {% if not is_popup %}
 {% block breadcrumbs %}
 <ol class="breadcrumb">
-  <small><li>{% block pretitle %}{% endblock %}
+  <small><li class="desktop-title">{% block pretitle %}{% endblock %}
     {% block content_title %}{% if title %}{{ title }}{% endif %}{% endblock %}</li></small>
+    <li class="mobile-search">{% search_form cl %}</li>
       <small><li class="breadcrumb-menu">
 <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
 &rsaquo; <a href="{% url 'admin:app_list' app_label=cl.opts.app_label %}">{{ cl.opts.app_config.verbose_name }}</a>
 &rsaquo; {{ cl.opts.verbose_name_plural|capfirst }}</li></small>
+<small>
+{% if has_add_permission %}
+    <li class="breadcrumb-menu-mobile">
+        {% url cl.opts|admin_urlname:'add' as add_url %}
+        <a href="{% add_preserved_filters add_url is_popup to_field %}">
+          {% blocktrans with cl.opts.verbose_name as name %}Add {{ name }}{% endblocktrans %}
+        </a>
+      </li></small>
+{% endif %}
 </ol>
 {% endblock %}
 {% endif %}
@@ -59,7 +69,7 @@
   {% endif %}
 {% endblock %}
 {% block coltype %}flex{% endblock %}
-{% block ghoster-topbar %}{% search_form cl %}{% endblock %}
+{% block ghoster-topbar %}<div class="desktop-search">{% search_form cl %}</div>{% endblock %}
 {% block content %}
   <div class="card">
     {% if cl.formset.errors %}
