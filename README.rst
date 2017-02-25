@@ -44,7 +44,7 @@ Installation
         ...
     ]
 
-3. don't forget to ``python manange.py collectstatic``
+3. don't forget to ``python manage.py collectstatic``
 
 Usage
 =====
