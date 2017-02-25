@@ -44,8 +44,10 @@ Installation
         ...
     ]
 
-Configuration
-=============
+3. don't forget to ``python manange.py collectstatic``
+
+Usage
+=====
 
 In ``models.py``, assume the model is defined as below:
 
@@ -53,16 +55,16 @@ In ``models.py``, assume the model is defined as below:
 
     from django.db import models
 
-	class MyModel(models.Model):
-		# the fields which are rendered into markdown
-		char_field = models.CharField(max_length=1024)
-		text_field = models.TextField()
-		
-		# other stuff
-		foreign_field = ...
-		file_field = ...
-		url_field = ...
-		...
+    class MyModel(models.Model):
+        # the fields which are rendered into markdown
+        char_field = models.CharField(max_length=1024)
+        text_field = models.TextField()
+        
+        # other stuff
+        foreign_field = ...
+        file_field = ...
+        url_field = ...
+        ...
 
 Then in ``admin.py``, inherit ``GhosterAdmin`` and override ``markdown_field`` and ``title_field`` attributes with the field names.
 

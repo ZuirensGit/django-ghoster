@@ -1,0 +1,6 @@
+include README.rst LICENSE DESCRIPTION
+global-exclude *pyc
+recursive-include ghoster/locale *
+recursive-include ghoster/static *
+recursive-include ghoster/templates *
+recursive-exclude __pycache__ *
